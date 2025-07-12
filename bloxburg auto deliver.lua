@@ -18,9 +18,9 @@ screenGui.Name = "DeliveryToggleGui"
 screenGui.ResetOnSpawn = false
 
 local button = Instance.new("TextButton")
-button.AnchorPoint = Vector2.new(0, 0) -- top-left corner (default)
-button.Size = UDim2.new(0, 150, 0, 40) -- fixed size like original
-button.Position = UDim2.new(0, 20, 0, 200) -- same position
+button.AnchorPoint = Vector2.new(0, 0) -- anchor from top-left corner
+button.Size = UDim2.new(0, 150, 0, 40) -- fixed size
+button.Position = UDim2.new(0, 20, 0, 20) -- 20px from left and top
 button.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
 button.TextColor3 = Color3.new(1, 1, 1)
 button.TextSize = 20
@@ -295,6 +295,7 @@ local function autoDeliveryLoop()
 
             lookAtPizzaBox()
             pressEUntilPizzaBox()
+            task.wait(2)
         end
         
 	end
