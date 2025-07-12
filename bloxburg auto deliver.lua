@@ -301,6 +301,7 @@ local function autoDeliveryLoop()
 	end
     
     restorePlayerToNormal()
+    tweenToPosition(Vector3.new(doorPos.X, 8, doorPos.Z), 1)
 end
 
 -- 🔘 Toggle button
