@@ -292,13 +292,15 @@ local function autoDeliveryLoop()
             else
                 warn("❌ MovingBoxes not found")
             end
-            
+
             lookAtPizzaBox()
             pressEUntilPizzaBox()
             task.wait(2)
         end
         
 	end
+    
+    restorePlayerToNormal()
 end
 
 -- 🔘 Toggle button
@@ -314,6 +316,5 @@ button.MouseButton1Click:Connect(function()
 	else
 		button.Text = "Start Auto Delivery"
 		button.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
-        restorePlayerToNormal()
 	end
 end)
