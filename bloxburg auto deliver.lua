@@ -295,7 +295,6 @@ local function autoDeliveryLoop()
 
             lookAtPizzaBox()
             pressEUntilPizzaBox()
-            task.wait(2)
         end
         
 	end
