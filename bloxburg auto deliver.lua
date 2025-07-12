@@ -29,6 +29,53 @@ button.Text = "Start Auto Delivery"
 button.AutomaticSize = Enum.AutomaticSize.None
 button.Parent = screenGui
 
+local targets = {
+    "Railing",
+    "InnerWall",
+    "Belt"
+}
+
+-- Recursive function to search through a folder and its children
+local function applyPropertiesToTargets(parent)
+    for _, descendant in ipairs(parent:GetDescendants()) do
+        if descendant:IsA("BasePart") and table.find(targets, descendant.Name) then
+            descendant.Transparency = 1
+            descendant.CanCollide = true
+        end
+    end
+end
+
+-- Target the PizzaPlanet interior
+local interior = workspace.Environment.Locations.City.PizzaPlanet:FindFirstChild("Interior")
+if interior then
+    applyPropertiesToTargets(interior)
+end
+
+local function restorePlayerToNormal()
+    local player = game:GetService("Players").LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+
+    -- Restore physics
+    if humanoid then
+        humanoid.PlatformStand = false
+    end
+
+    if hrp then
+        hrp.Anchored = false
+    end
+
+    -- Re-enable collisions
+    for _, part in ipairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = true
+        end
+    end
+
+    print("✅ Player restored to normal state.")
+end
+
 
 local function pressEUntilPizzaBoxGone()
 	local player = game:GetService("Players").LocalPlayer
@@ -58,6 +105,7 @@ local function pressEUntilPizzaBoxGone()
         end
 	end
 end
+
 
 local function pressEUntilPizzaBox()
 	while true do
@@ -171,7 +219,7 @@ function tpToPizza()
     local hrp = char:WaitForChild("HumanoidRootPart")
 
     -- Set target position
-    local targetPos = Vector3.new(-51.9334602355957, 7, -46.060855865478516)
+    local targetPos = Vector3.new(-48.278194427490234, 5,-43.2014045715332)
 
     -- Teleport
     hrp.CFrame = CFrame.new(targetPos)
@@ -205,7 +253,7 @@ local function autoDeliveryLoop()
 		end
 
 		local customerPos = customer.HumanoidRootPart.Position
-		local doorPos = Vector3.new(-51.9334602355957, 7, -46.060855865478516)
+		local doorPos = Vector3.new(-48.278194427490234, 5,-43.2014045715332)
 
 		-- 1. Drop under map
 		hrp.CFrame = CFrame.new(hrp.Position.X, UNDER_Y, hrp.Position.Z)
@@ -215,22 +263,41 @@ local function autoDeliveryLoop()
 
 		-- 3. Fly up to customer
 		tweenToPosition(customerPos, FLY_TIME_Y)
-		task.wait(.5)
+		task.wait(1)
 		pressEUntilPizzaBoxGone()
 
-         -- 4. Drop under map again
-        hrp.CFrame = CFrame.new(hrp.Position.X, UNDER_Y, hrp.Position.Z)
+        local playerFolder = workspace:FindFirstChild(player.Name)
+		local hasPizzaBox = playerFolder and playerFolder:FindFirstChild("Pizza Box")
 
-        -- 5. Fly under to door
-        tweenToPosition(Vector3.new(doorPos.X, UNDER_Y, doorPos.Z), FLY_TIME_XZ)
+        if not hasPizzaBox then
+            -- 4. Drop under map again
+            hrp.CFrame = CFrame.new(hrp.Position.X, UNDER_Y, hrp.Position.Z)
 
-        -- 6. Fly up to door
-        tweenToPosition(doorPos, FLY_TIME_Y)
-        task.wait(10)
-        lookAtPizzaBox()
-        pressEUntilPizzaBox()
-        task.wait(2)
+            -- 5. Fly under to door
+            tweenToPosition(Vector3.new(doorPos.X, UNDER_Y, doorPos.Z), FLY_TIME_XZ)
 
+            -- 6. Fly up to door
+            tweenToPosition(doorPos, FLY_TIME_Y)
+            task.wait(10)
+
+            local movingBoxes = workspace.Environment.Locations.City.PizzaPlanet.Interior.Conveyor:FindFirstChild("MovingBoxes")
+
+            if movingBoxes then
+                for _, child in ipairs(movingBoxes:GetChildren()) do
+                    if child:IsA("BasePart") then
+                        tweenToPosition(child.Position, 1)
+                        break
+                    end
+                end
+            else
+                warn("❌ MovingBoxes not found")
+            end
+            
+            lookAtPizzaBox()
+            pressEUntilPizzaBox()
+            task.wait(2)
+        end
+        
 	end
 end
 
@@ -247,5 +314,6 @@ button.MouseButton1Click:Connect(function()
 	else
 		button.Text = "Start Auto Delivery"
 		button.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+        restorePlayerToNormal()
 	end
 end)
