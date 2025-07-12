@@ -18,13 +18,15 @@ screenGui.Name = "DeliveryToggleGui"
 screenGui.ResetOnSpawn = false
 
 local button = Instance.new("TextButton")
-button.Size = UDim2.new(0, 150, 0, 40)
-button.Position = UDim2.new(0, 20, 0, 200)
+button.AnchorPoint = Vector2.new(0, 0) -- top-left corner (default)
+button.Size = UDim2.new(0, 150, 0, 40) -- fixed size like original
+button.Position = UDim2.new(0, 20, 0, 200) -- same position
 button.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
 button.TextColor3 = Color3.new(1, 1, 1)
 button.TextSize = 20
 button.Font = Enum.Font.SourceSansBold
 button.Text = "Start Auto Delivery"
+button.AutomaticSize = Enum.AutomaticSize.None
 button.Parent = screenGui
 
 
@@ -169,7 +171,7 @@ function tpToPizza()
     local hrp = char:WaitForChild("HumanoidRootPart")
 
     -- Set target position
-    local targetPos = Vector3.new(-56.10773468017578,10,-41.60958480834961)
+    local targetPos = Vector3.new(-51.9334602355957, 7, -46.060855865478516)
 
     -- Teleport
     hrp.CFrame = CFrame.new(targetPos)
@@ -203,7 +205,7 @@ local function autoDeliveryLoop()
 		end
 
 		local customerPos = customer.HumanoidRootPart.Position
-		local doorPos = Vector3.new(-56.1077, 5.9, -41.6095)
+		local doorPos = Vector3.new(-51.9334602355957, 7, -46.060855865478516)
 
 		-- 1. Drop under map
 		hrp.CFrame = CFrame.new(hrp.Position.X, UNDER_Y, hrp.Position.Z)
